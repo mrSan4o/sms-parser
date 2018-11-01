@@ -6,33 +6,33 @@
 
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-<LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
->
-
-    <TextView
-            android:id="@+id/sms_date"
+    <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="4dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+    >
 
-            android:text="12.12.2012 12:12"
-            android:textStyle="bold"
-    />
+        <TextView
+                android:id="@+id/sms_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="4dp"
 
-    <TextView
-            android:id="@+id/sms_item_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+                android:text="12.12.2012 12:12"
+                android:textStyle="bold"
+        />
 
-            android:text="123123 123 123 12312 3123 123 123123 123 123 123123 123"
-    />
+        <TextView
+                android:id="@+id/sms_item_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
 
-</LinearLayout>
+                android:text="123123 123 123 12312 3123 123 123123 123 123 123123 123"
+        />
+
+    </LinearLayout>
 
 
 </android.support.v7.widget.CardView>
