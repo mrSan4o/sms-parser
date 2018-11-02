@@ -1,4 +1,6 @@
 var dep = [:]
 var ver = [:]
+ext.dep = dep
+ext.ver = ver
 
 ver.kotlin = '1.2.71'

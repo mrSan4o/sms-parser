@@ -1,14 +1,14 @@
-apply plugin: 'com.android.feature'
+apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 27
     defaultConfig {
         minSdkVersion 23
-        targetSdkVersion 28
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -17,11 +17,11 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(':base')
+
 
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    ext.supportLibVersion = "28.0.0"
+    ext.supportLibVersion = "27.0.1"
     // Support Libraries
     implementation "com.android.support:appcompat-v7:${supportLibVersion}"
     implementation "com.android.support:design:${supportLibVersion}"
