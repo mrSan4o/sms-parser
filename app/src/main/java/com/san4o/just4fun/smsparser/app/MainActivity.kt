@@ -16,15 +16,17 @@ import android.widget.TextView
 import com.san4o.just4fun.smsparser.app.utils.getStringByName
 import com.san4o.just4fun.smsparser.app.utils.longDefaultFormat
 import kotlinx.android.synthetic.main.sms_list.*
+import java.lang.Exception
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
-    
-    private val LOG_TAG : String = MainActivity::class.java.simpleName
+
+    private val LOG_TAG: String = MainActivity::class.java.simpleName
 
     private val PERMISSION_REQUEST_CODE: Int = 111
 
-    private lateinit var adapter: RecyclerView.Adapter<SmsViewHolder>
+    private lateinit var adapter: SmsListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +40,7 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        if (!isPermissionGranted(Manifest.permission.READ_SMS)){
+        if (!isPermissionGranted(Manifest.permission.READ_SMS)) {
             requestPermissions(Manifest.permission.READ_SMS, PERMISSION_REQUEST_CODE)
             return
         }
@@ -51,30 +53,40 @@ class MainActivity : AppCompatActivity() {
         val messageCursor =
             contentResolver.query(
                 uri,
-                arrayOf("_id", "thread_id", "address", "date", "type", "body"),
-                null,
-                null,
-                "date" + " ASC"
+                arrayOf("date", "body"),
+//                arrayOf("_id", "thread_id", "address", "date", "type", "body"),
+                "address = ?",
+                arrayOf("900"),
+                "date DESC"
             )
 
+        val items : MutableList<SmsItem> = ArrayList()
         if (messageCursor != null && messageCursor.count > 0) {
             while (messageCursor.moveToNext()) {
-                val date = messageCursor.getStringByName("date")
-                val address = messageCursor.getStringByName("address")
-                val type = messageCursor.getStringByName("type")
+                val dateTimeString = messageCursor.getStringByName("date")
+//                val address = messageCursor.getStringByName("address")
+//                val type = messageCursor.getStringByName("type")
                 val body = messageCursor.getStringByName("body")
+                val date = Date(dateTimeString.toLong())
+                var type = SmsType.UNKNOWN
+                try {
+                    type = SmsType.valueOfBody(body)
+                }catch (e : Exception){
+                    Log.d(LOG_TAG, "Error ${date.longDefaultFormat()} : $body")
+                    continue
+                }
 
-                Log.i(LOG_TAG,"------------------------------------")
-                Log.i(LOG_TAG,"type: $type")
-                Log.i(LOG_TAG,"address: $address")
-                Log.i(LOG_TAG,"date: $date")
-                Log.i(LOG_TAG,"body: $body")
-                Log.i(LOG_TAG,"------------------------------------")
+
+                Log.d(LOG_TAG, ">>> [${type.title}] ${date.longDefaultFormat()} : $body")
 
             }
-        }else{
-            Log.i(LOG_TAG,"EMPTY RESULT")
+//            items.sortByDescending { it.date }
+
+
+        } else {
+            Log.i(LOG_TAG, "EMPTY RESULT")
         }
+        Log.i(LOG_TAG, "result : ${messageCursor.count}")
     }
 
     private fun requestPermissions(perm: String, code: Int) {
@@ -88,7 +100,7 @@ class MainActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        if (PERMISSION_REQUEST_CODE == requestCode){
+        if (PERMISSION_REQUEST_CODE == requestCode) {
             if (grantResults.first() == PackageManager.PERMISSION_GRANTED) {
                 refreshSms()
             }
@@ -97,7 +109,14 @@ class MainActivity : AppCompatActivity() {
 
     class SmsListAdapter(val context: Context) : RecyclerView.Adapter<SmsViewHolder>() {
 
-        private val items: List<SmsItem> = ArrayList()
+        private val items: MutableList<SmsItem> = ArrayList()
+
+        fun refreshItems(items : List<SmsItem>){
+            this.items.clear()
+            this.items.addAll(items)
+
+            notifyDataSetChanged()
+        }
 
         override fun getItemCount(): Int {
             return items.size
