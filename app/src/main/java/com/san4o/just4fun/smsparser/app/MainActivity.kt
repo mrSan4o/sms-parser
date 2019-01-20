@@ -1,11 +1,12 @@
 package com.san4o.just4fun.smsparser.app
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -13,20 +14,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.san4o.just4fun.smsparser.app.utils.getStringByName
-import com.san4o.just4fun.smsparser.app.utils.longDefaultFormat
+import com.san4o.just4fun.smsparser.app.dagger.AppScopeMember
+import com.san4o.just4fun.smsparser.app.database.dao.SmsDao
+import com.san4o.just4fun.smsparser.app.database.entities.Sms
+import com.san4o.just4fun.smsparser.app.utils.*
+import io.reactivex.Completable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Action
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.sms_list.*
-import java.lang.Exception
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), AppScopeMember {
 
     private val LOG_TAG: String = MainActivity::class.java.simpleName
 
     private val PERMISSION_REQUEST_CODE: Int = 111
 
     private lateinit var adapter: SmsListAdapter
+
+
+    @Inject
+    lateinit var smsDao: SmsDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +47,17 @@ class MainActivity : AppCompatActivity() {
         adapter = SmsListAdapter(this)
         smsList.adapter = adapter
         smsList.layoutManager = LinearLayoutManager(this)
+
+        syncButton.setOnClickListener { onSync() }
+
+
+        val disposable = smsDao.findAll()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { items -> adapter.refreshItems(items)},
+                {e -> showToastShort("Error ${e.message}")}
+            )
     }
 
     override fun onStart() {
@@ -45,10 +68,45 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        refreshSms()
+
     }
 
-    private fun refreshSms() {
+    fun onSync() {
+
+        val sms = readSms()
+
+        val completables = sms.map { smsDao.insertNew(it) }
+
+        val disposable = Completable.concat(completables)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    showToastShort("${sms.size} Sms sync")
+                },
+                { e ->
+                    showToastShort("Error ${e.message}")
+                    Log.e(LOG_TAG, e.message, e)
+                }
+            )
+
+    }
+
+
+
+    private fun parseSms(sms: List<Sms>) {
+        for (it in sms) {
+            val content = it.content
+
+            Log.i(LOG_TAG, "")
+            Log.i(LOG_TAG, "date : ${it.datetime.toDate().longDefaultFormat()}")
+            Log.i(LOG_TAG, "content : ${it.content}")
+        }
+    }
+
+    private fun readSms(): List<Sms> {
+        val items: MutableList<Sms> = ArrayList()
+
         val uri = Uri.parse("content://sms")
         val messageCursor =
             contentResolver.query(
@@ -60,7 +118,7 @@ class MainActivity : AppCompatActivity() {
                 "date DESC"
             )
 
-        val items : MutableList<SmsItem> = ArrayList()
+
         if (messageCursor != null && messageCursor.count > 0) {
             while (messageCursor.moveToNext()) {
                 val dateTimeString = messageCursor.getStringByName("date")
@@ -71,14 +129,16 @@ class MainActivity : AppCompatActivity() {
                 var type = SmsType.UNKNOWN
                 try {
                     type = SmsType.valueOfBody(body)
-                }catch (e : Exception){
+                } catch (e: Exception) {
                     Log.d(LOG_TAG, "Error ${date.longDefaultFormat()} : $body")
                     continue
                 }
 
 
-                Log.d(LOG_TAG, ">>> [${type.title}] ${date.longDefaultFormat()} : $body")
 
+
+                Log.d(LOG_TAG, ">>> [${type.title}] ${date.longDefaultFormat()} : $body")
+                items.add(Sms(null, body, date.time))
             }
 //            items.sortByDescending { it.date }
 
@@ -87,6 +147,8 @@ class MainActivity : AppCompatActivity() {
             Log.i(LOG_TAG, "EMPTY RESULT")
         }
         Log.i(LOG_TAG, "result : ${messageCursor.count}")
+
+        return items
     }
 
     private fun requestPermissions(perm: String, code: Int) {
@@ -102,16 +164,16 @@ class MainActivity : AppCompatActivity() {
 
         if (PERMISSION_REQUEST_CODE == requestCode) {
             if (grantResults.first() == PackageManager.PERMISSION_GRANTED) {
-                refreshSms()
+
             }
         }
     }
 
     class SmsListAdapter(val context: Context) : RecyclerView.Adapter<SmsViewHolder>() {
 
-        private val items: MutableList<SmsItem> = ArrayList()
+        private val items: MutableList<Sms> = ArrayList()
 
-        fun refreshItems(items : List<SmsItem>){
+        fun refreshItems(items: List<Sms>) {
             this.items.clear()
             this.items.addAll(items)
 
@@ -130,7 +192,7 @@ class MainActivity : AppCompatActivity() {
         override fun onBindViewHolder(vh: SmsViewHolder, i: Int) {
             val item = items.get(i)
 
-            vh.setDate(item.date)
+            vh.setDate(item.date())
             vh.setContent(item.content)
         }
     }
@@ -138,7 +200,7 @@ class MainActivity : AppCompatActivity() {
     class SmsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         companion object {
             fun create(context: Context, viewGroup: ViewGroup): SmsViewHolder {
-                return SmsViewHolder(LayoutInflater.from(context).inflate(R.layout.sms_list_item, viewGroup))
+                return SmsViewHolder(LayoutInflater.from(context).inflate(R.layout.sms_list_item, viewGroup, false))
             }
         }
 

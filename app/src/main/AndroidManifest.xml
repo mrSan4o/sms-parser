@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
           package="com.san4o.just4fun.smsparser.app">
     <uses-permission android:name="android.permission.RECEIVE_SMS" android:protectionLevel="signature" />
     <uses-permission android:name="android.permission.READ_SMS" />
@@ -9,8 +9,10 @@
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
+            android:name=".App"
             android:supportsRtl="true"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+    >
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -19,11 +21,6 @@
             </intent-filter>
         </activity>
 
-        <!--<receiver android:name="com.aquadeals.seller.services.SmsReceiver">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.provider.Telephony.SMS_RECEIVED"/>-->
-            <!--</intent-filter>-->
-        <!--</receiver>-->
     </application>
 
 </manifest>
