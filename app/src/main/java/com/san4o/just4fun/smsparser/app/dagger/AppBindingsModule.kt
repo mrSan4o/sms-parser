@@ -1,6 +1,6 @@
 package com.san4o.just4fun.smsparser.app.dagger
 
-import com.san4o.just4fun.smsparser.app.MainActivity
+import com.san4o.just4fun.smsparser.app.SmsListActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -8,5 +8,5 @@ import dagger.android.ContributesAndroidInjector
 interface AppBindingsModule {
 
     @ContributesAndroidInjector
-    fun contributeMainActivityInjector() : MainActivity
+    fun contributeMainActivityInjector() : SmsListActivity
 }

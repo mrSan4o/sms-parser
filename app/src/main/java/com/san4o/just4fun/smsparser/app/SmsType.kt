@@ -1,5 +1,6 @@
 package com.san4o.just4fun.smsparser.app
 
+import android.util.Log
 import java.lang.IllegalArgumentException
 import java.lang.RuntimeException
 
@@ -7,11 +8,12 @@ enum class SmsType(val title:String) {
 
     UNKNOWN("Неизвестно"),
     TRANSFER("Перевод"),
-    ENROLLMENT("Зачисление"),
-    CONSUMPTION("Расход"),
+    INFLOW("Зачисление"),
+    OUTFLOW("Расход"),
     EXTRADITION("Выдача"),
     PAYMENT("Оплата"),
     WRITE_OFF("Списание"),
+
     ;
 
 
@@ -20,13 +22,13 @@ enum class SmsType(val title:String) {
 
         fun valueOfBody(body: String): SmsType {
             if (!body.startsWith("VISA7065")) {
-                throw IllegalArgumentException("This is not operation body : $body")
+                throw RuntimeException("This is not operation body : $body")
             }
             if (body.contains("Покупка")
                 || body.contains("покупка")
                 || body.contains("ПОКУПКА")
             ) {
-                return CONSUMPTION
+                return OUTFLOW
             }
 
             if (body.contains("Выдача")
@@ -51,12 +53,12 @@ enum class SmsType(val title:String) {
                 || body.contains("Зачисление")
                 || body.contains("ЗАЧИСЛЕНИЕ")
             ) {
-                return ENROLLMENT
+                return INFLOW
             }
 
+            Log.d("SMS_TYPE", "Unknown : $body")
 
-
-            throw IllegalArgumentException("Unknown parse body '$body'")
+            return UNKNOWN
         }
     }
 }
