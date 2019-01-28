@@ -20,7 +20,6 @@ interface SmsDao {
 
 
 
-
     @Insert
     fun insert(sms: Sms)
 }

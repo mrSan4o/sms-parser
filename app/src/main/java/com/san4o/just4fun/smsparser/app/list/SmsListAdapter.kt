@@ -1,4 +1,4 @@
-package com.san4o.just4fun.smsparser.app
+package com.san4o.just4fun.smsparser.app.list
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
@@ -6,35 +6,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.san4o.just4fun.smsparser.app.R
+import com.san4o.just4fun.smsparser.app.SmsType
 import com.san4o.just4fun.smsparser.app.database.entities.Sms
 import com.san4o.just4fun.smsparser.app.utils.longDefaultFormat
 import java.util.*
 
-class SmsListAdapter(val context: Context) : RecyclerView.Adapter<SmsListAdapter.SmsViewHolder>() {
-
-    private val items: MutableList<Sms> =
-        ArrayList()
-
-    fun refreshItems(items: List<Sms>) {
-        this.items.clear()
-        this.items.addAll(items)
-
-        notifyDataSetChanged()
-    }
+class SmsListAdapter(
+    private val context: Context,
+    private val viewModel: SmsListViewModel
+) : RecyclerView.Adapter<SmsListAdapter.SmsViewHolder>() {
 
     override fun getItemCount(): Int {
-        return items.size
+        return viewModel.getSize()
     }
 
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, p1: Int): SmsListAdapter.SmsViewHolder {
-        return SmsListAdapter.SmsViewHolder.create(context, viewGroup)
+    override fun onCreateViewHolder(viewGroup: ViewGroup, p1: Int): SmsViewHolder {
+        return SmsViewHolder.create(context, viewGroup)
     }
 
-    override fun onBindViewHolder(vh: SmsListAdapter.SmsViewHolder, i: Int) {
-        val item = items.get(i)
+    override fun onBindViewHolder(vh: SmsViewHolder, i: Int) {
+        val item = viewModel.getItem(i)
 
-        vh.dateView.text = item.date().longDefaultFormat()
+        vh.dateView.text = item.date.longDefaultFormat()
         vh.contentView.text = item.content
         vh.typeView.text = SmsType.valueOfBody(item.content).title.toUpperCase()
     }
@@ -42,7 +37,13 @@ class SmsListAdapter(val context: Context) : RecyclerView.Adapter<SmsListAdapter
     class SmsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         companion object {
             fun create(context: Context, viewGroup: ViewGroup): SmsViewHolder {
-                return SmsViewHolder(LayoutInflater.from(context).inflate(R.layout.sms_list_item, viewGroup, false))
+                return SmsViewHolder(
+                    LayoutInflater.from(context).inflate(
+                        R.layout.sms_list_item,
+                        viewGroup,
+                        false
+                    )
+                )
             }
         }
 
