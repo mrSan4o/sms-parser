@@ -1,6 +1,7 @@
 package com.san4o.just4fun.smsparser.app.list
 
 import android.Manifest
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -42,6 +43,13 @@ class SmsListActivity : AppCompatActivity(), AppScopeMember {
 
         this.viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(SmsListViewModel::class.java)
+
+        viewModel.errorLoadingNotification.observe(this, Observer {
+            showToastShort("Error Loading")
+        })
+        viewModel.refreshItemsViewCommand.observe(this, Observer {
+            adapter.notifyDataSetChanged()
+        })
 
         adapter = SmsListAdapter(this, viewModel)
         smsList.adapter = adapter

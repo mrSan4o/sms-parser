@@ -52,11 +52,6 @@ class SmsPhoneDatasource @Inject constructor(): SmsDatasource {
                     Timber.d(e, "Error ${date.longDefaultFormat()} : $body")
                     continue
                 }
-
-
-
-
-                Timber.d( ">>> [${type.title}] ${date.longDefaultFormat()} : $body")
                 items.add(SmsItem(body, date))
             }
 //            items.sortByDescending { it.date }

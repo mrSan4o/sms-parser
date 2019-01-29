@@ -1,6 +1,7 @@
 package com.san4o.just4fun.smsparser.app
 
 import android.util.Log
+import timber.log.Timber
 import java.lang.IllegalArgumentException
 import java.lang.RuntimeException
 
@@ -22,7 +23,7 @@ enum class SmsType(val title:String) {
 
         fun valueOfBody(body: String): SmsType {
             if (!body.startsWith("VISA7065")) {
-                throw RuntimeException("This is not operation body : $body")
+                return UNKNOWN
             }
             if (body.contains("Покупка")
                 || body.contains("покупка")
@@ -56,7 +57,7 @@ enum class SmsType(val title:String) {
                 return INFLOW
             }
 
-            Log.d("SMS_TYPE", "Unknown : $body")
+            Timber.d("SMS_TYPE Unknown : $body")
 
             return UNKNOWN
         }

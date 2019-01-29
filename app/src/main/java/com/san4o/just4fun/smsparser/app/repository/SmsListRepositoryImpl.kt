@@ -37,10 +37,12 @@ class SmsListRepositoryImpl @Inject constructor() : SmsListRepository {
     override fun readSms(callback: SingleCallback<List<SmsItem>>): Disposable {
         val single = phoneDatasourse.fetchSms()
             .flatMap { items ->
-
+                Timber.d("fetch ${items.size}")
                 return@flatMap Completable.concat(
                     items.map { item -> smsDao.insertNew(Sms(null, item.content, item.date.time)) }
-                ).toSingle { items }
+                )
+                    .doOnComplete{ Timber.d("Update ${items.size} items complete!")}
+                    .toSingle { items }
             }
         return disposable("readSms", single, callback)
     }
@@ -51,13 +53,13 @@ class SmsListRepositoryImpl @Inject constructor() : SmsListRepository {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeWith(object : DisposableSingleObserver<T>(){
                 override fun onSuccess(t: T) {
-                    Timber.d("[$name] onSuccess : $t")
+                    Timber.d("[$name] onSuccess")
                     callback.onSuccess(t)
                 }
 
 
                 override fun onError(e: Throwable)  {
-                    Timber.e(e, "find list")
+                    Timber.e(e, ">>> [$name] Error : ${e.message}")
                     callback.onError(e)
                 }
             })
@@ -73,13 +75,13 @@ class SmsListRepositoryImpl @Inject constructor() : SmsListRepository {
                 }
 
                 override fun onNext(t: T) {
-                    Timber.d("[$name] onNext : $t")
+                    Timber.d("[$name] onNext")
                     callback.onSuccess(t)
                 }
 
 
                 override fun onError(e: Throwable)  {
-                    Timber.e(e, "Error $name")
+                    Timber.e(e, ">>> Error $name : ${e.message}")
                     callback.onError(e)
                 }
             })

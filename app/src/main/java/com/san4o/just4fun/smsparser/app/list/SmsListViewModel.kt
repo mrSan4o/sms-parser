@@ -14,8 +14,10 @@ class SmsListViewModel @Inject constructor(
 )
     : ViewModel(), ListAdapter<SmsItem> {
 
-    private val items : MutableList<SmsItem> = ArrayList()
+    private val items = ArrayList<SmsItem>()
     val errorLoadingNotification = SingleVoidLiveEvent()
+    val refreshItemsViewCommand = SingleVoidLiveEvent()
+    val showLoading = SingleVoidLiveEvent()
 
     init {
 
@@ -26,6 +28,7 @@ class SmsListViewModel @Inject constructor(
         repository.fetchSms(object : SingleCallback<List<SmsItem>> {
             override fun onSuccess(data: List<SmsItem>) {
                 items.addAll(data)
+                errorLoadingNotification.call()
             }
 
             override fun onError(e: Throwable) {
@@ -39,7 +42,8 @@ class SmsListViewModel @Inject constructor(
     fun readSms() {
         repository.readSms(object : SingleCallback<List<SmsItem>>{
             override fun onSuccess(data: List<SmsItem>) {
-
+                items.addAll(data)
+                errorLoadingNotification.call()
             }
 
             override fun onError(e: Throwable) {
