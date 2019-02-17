@@ -1,26 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="com.san4o.just4fun.smsparser.app">
-    <uses-permission android:name="android.permission.RECEIVE_SMS" android:protectionLevel="signature" />
-    <uses-permission android:name="android.permission.READ_SMS" />
+
+    <uses-permission
+            android:name="android.permission.RECEIVE_SMS"
+            android:protectionLevel="signature"/>
+    <uses-permission android:name="android.permission.READ_SMS"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
+            android:name=".App"
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
-            android:name=".App"
             android:supportsRtl="true"
-            android:theme="@style/AppTheme"
-    >
-        <activity android:name=".list.SmsListActivity">
+            android:theme="@style/AppTheme">
+        <activity android:name="com.san4o.just4fun.smsparser.app.ui.list.SmsListActivity">
+
+        </activity>
+        <activity android:name=".ui.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

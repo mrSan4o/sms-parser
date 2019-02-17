@@ -8,7 +8,9 @@ import com.san4o.just4fun.smsparser.app.database.dao.SmsDao
 import com.san4o.just4fun.smsparser.app.utils.getStringByName
 import com.san4o.just4fun.smsparser.app.utils.longDefaultFormat
 import io.reactivex.Single
+import org.apache.commons.io.FileUtils
 import timber.log.Timber
+import java.io.File
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -46,6 +48,9 @@ class SmsPhoneDatasource @Inject constructor(): SmsDatasource {
                 val body = messageCursor.getStringByName("body")
                 val date = Date(dateTimeString.toLong())
                 var type = SmsType.UNKNOWN
+
+
+
                 try {
                     type = SmsType.valueOfBody(body)
                 } catch (e: Exception) {
@@ -56,6 +61,14 @@ class SmsPhoneDatasource @Inject constructor(): SmsDatasource {
             }
 //            items.sortByDescending { it.date }
 
+//            val file = File("/storage/emulated/0/Download/sms/list.txt")
+//            if (!file.exists() || file.delete()) {
+//                if (!file.parentFile.exists() && !file.parentFile.mkdir()) {
+//                    throw RuntimeException("WTF")
+//                }
+//
+//                FileUtils.writeLines(file, items.map { "\"${it.content}\", ${it.date.time}" })
+//            }
 
         } else {
             Timber.i( "EMPTY RESULT")

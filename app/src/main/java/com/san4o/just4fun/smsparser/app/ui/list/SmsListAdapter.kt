@@ -1,4 +1,4 @@
-package com.san4o.just4fun.smsparser.app.list
+package com.san4o.just4fun.smsparser.app.ui.list
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
@@ -8,9 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.san4o.just4fun.smsparser.app.R
 import com.san4o.just4fun.smsparser.app.SmsType
-import com.san4o.just4fun.smsparser.app.database.entities.Sms
 import com.san4o.just4fun.smsparser.app.utils.longDefaultFormat
-import java.util.*
 
 class SmsListAdapter(
     private val context: Context,

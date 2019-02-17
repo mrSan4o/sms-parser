@@ -1,15 +1,13 @@
 package com.san4o.just4fun.smsparser.app.dagger
 
-import com.san4o.just4fun.smsparser.app.list.SmsListActivity
-import com.san4o.just4fun.smsparser.app.repository.SmsListRepository
-import com.san4o.just4fun.smsparser.app.repository.SmsListRepositoryImpl
+import com.san4o.just4fun.smsparser.app.ui.list.SmsListActivity
 import dagger.Binds
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import android.arch.lifecycle.ViewModel
-import com.san4o.just4fun.smsparser.app.dagger.viewmodel.ViewModelFactory
 import com.san4o.just4fun.smsparser.app.dagger.viewmodel.ViewModelKey
-import com.san4o.just4fun.smsparser.app.list.SmsListViewModel
+import com.san4o.just4fun.smsparser.app.repository.*
+import com.san4o.just4fun.smsparser.app.ui.list.SmsListViewModel
 import dagger.multibindings.IntoMap
 
 
@@ -17,6 +15,8 @@ import dagger.multibindings.IntoMap
 @Module
 interface AppBindingsModule {
 
+    @Binds
+    fun bindSmsDatasource(impl : TestDataSmsDataSource) : SmsDatasource
 
     @Binds
     @IntoMap

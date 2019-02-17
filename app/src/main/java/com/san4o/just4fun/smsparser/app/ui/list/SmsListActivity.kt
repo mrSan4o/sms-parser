@@ -1,28 +1,20 @@
-package com.san4o.just4fun.smsparser.app.list
+package com.san4o.just4fun.smsparser.app.ui.list
 
 import android.Manifest
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.pm.PackageManager
-import android.net.Uri
+import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import com.san4o.just4fun.smsparser.app.R
-import com.san4o.just4fun.smsparser.app.SmsType
 import com.san4o.just4fun.smsparser.app.dagger.AppScopeMember
 import com.san4o.just4fun.smsparser.app.dagger.viewmodel.ViewModelFactory
-import com.san4o.just4fun.smsparser.app.database.dao.SmsDao
-import com.san4o.just4fun.smsparser.app.database.entities.Sms
+import com.san4o.just4fun.smsparser.app.databinding.SmsListBinding
 import com.san4o.just4fun.smsparser.app.utils.*
-import io.reactivex.Completable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.sms_list.*
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class SmsListActivity : AppCompatActivity(), AppScopeMember {
 
@@ -39,10 +31,11 @@ class SmsListActivity : AppCompatActivity(), AppScopeMember {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.sms_list)
+        val binding = DataBindingUtil.setContentView<SmsListBinding>(this, R.layout.sms_list)
 
         this.viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(SmsListViewModel::class.java)
+        binding.model = viewModel
 
         viewModel.errorLoadingNotification.observe(this, Observer {
             showToastShort("Error Loading")
@@ -71,6 +64,7 @@ class SmsListActivity : AppCompatActivity(), AppScopeMember {
     fun onSync() {
         viewModel.readSms()
     }
+
     private fun requestPermissions(perm: String, code: Int) {
         requestPermissions(arrayOf(perm), code)
     }
