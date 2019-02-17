@@ -16,7 +16,7 @@ import dagger.multibindings.IntoMap
 interface AppBindingsModule {
 
     @Binds
-    fun bindSmsDatasource(impl : TestDataSmsDataSource) : SmsDatasource
+    fun bindSmsDatasource(impl : SmsPhoneDatasource) : SmsDatasource
 
     @Binds
     @IntoMap

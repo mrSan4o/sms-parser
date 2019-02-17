@@ -18,7 +18,8 @@ fun Date.longDefaultFormat(): String {
 }
 
 fun Cursor.getStringByName(name: String): String {
-    return this.getString(this.getColumnIndex(name))
+    val string = this.getString(this.getColumnIndex(name))
+    return string ?: ""
 }
 
 fun Long.toDate(): Date {

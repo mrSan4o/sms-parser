@@ -1,12 +1,10 @@
 package com.san4o.just4fun.smsparser.app.repository
 
 import android.content.Context
-import android.net.Uri
-import com.san4o.just4fun.smsparser.app.SmsItem
+import android.provider.Telephony
+import com.san4o.just4fun.smsparser.app.SmsSourceItem
 import com.san4o.just4fun.smsparser.app.SmsType
-import com.san4o.just4fun.smsparser.app.database.dao.SmsDao
 import com.san4o.just4fun.smsparser.app.utils.getStringByName
-import com.san4o.just4fun.smsparser.app.utils.longDefaultFormat
 import io.reactivex.Single
 import org.apache.commons.io.FileUtils
 import timber.log.Timber
@@ -23,57 +21,67 @@ class SmsPhoneDatasource @Inject constructor(): SmsDatasource {
 
 
 
-    override fun fetchSms(): Single<List<SmsItem>> = Single.fromCallable{ readSberbankSms()}
+    override fun fetchSms(): Single<List<SmsSourceItem>> = Single.fromCallable{ readSberbankSms()}
 
-    private fun readSberbankSms(): List<SmsItem> {
-        val items: MutableList<SmsItem> = ArrayList()
+    private val readSmsFields = arrayOf(
+        Telephony.Sms.Inbox.BODY,
+        Telephony.Sms.Inbox.DATE,
+        Telephony.Sms.Inbox.SUBJECT,
+        Telephony.Sms.Inbox.ADDRESS,
+        Telephony.Sms.Inbox.DEFAULT_SORT_ORDER,
+        Telephony.Sms.Inbox.PERSON,
+        Telephony.Sms.Inbox.READ,
+        Telephony.Sms.Inbox.STATUS,
+        Telephony.Sms.Inbox.TYPE
+        )
 
-        val uri = Uri.parse("content://sms")
-        val messageCursor =
+    private fun readSberbankSms(): List<SmsSourceItem> {
+        val items: MutableList<SmsSourceItem> = ArrayList()
+
+
+        val cursor =
             context.contentResolver.query(
-                uri,
-                arrayOf("date", "body"),
+                Telephony.Sms.Inbox.CONTENT_URI,
+                readSmsFields,
 //                arrayOf("_id", "thread_id", "address", "date", "type", "body"),
-                "address = ?",
+                "${Telephony.Sms.Inbox.ADDRESS} = ? "+
+                "AND ${Telephony.Sms.Inbox.TYPE} = ${Telephony.Sms.Inbox.MESSAGE_TYPE_INBOX}",
                 arrayOf("900"),
-                "date DESC"
+                Telephony.Sms.Inbox.DATE+" ASC"
             )
 
 
-        if (messageCursor != null && messageCursor.count > 0) {
-            while (messageCursor.moveToNext()) {
-                val dateTimeString = messageCursor.getStringByName("date")
-//                val address = messageCursor.getStringByName("address")
-//                val type = messageCursor.getStringByName("type")
-                val body = messageCursor.getStringByName("body")
+        if (cursor != null && cursor.count > 0) {
+            while (cursor.moveToNext()) {
+                val dateTimeString = cursor.getStringByName(Telephony.Sms.Inbox.DATE)
+                val address = cursor.getStringByName(Telephony.Sms.Inbox.ADDRESS)
+                val subject = cursor.getStringByName(Telephony.Sms.Inbox.SUBJECT)
+                val body = cursor.getStringByName(Telephony.Sms.Inbox.BODY)
                 val date = Date(dateTimeString.toLong())
-                var type = SmsType.UNKNOWN
+                var type = cursor.getStringByName(Telephony.Sms.Inbox.TYPE)
+
+                var person = cursor.getStringByName(Telephony.Sms.Inbox.PERSON)
+                var read = cursor.getStringByName(Telephony.Sms.Inbox.READ)
+                var status = cursor.getStringByName(Telephony.Sms.Inbox.STATUS)
 
 
-
-                try {
-                    type = SmsType.valueOfBody(body)
-                } catch (e: Exception) {
-                    Timber.d(e, "Error ${date.longDefaultFormat()} : $body")
-                    continue
-                }
-                items.add(SmsItem(body, date))
+                items.add(SmsSourceItem(body, date))
             }
 //            items.sortByDescending { it.date }
 
-//            val file = File("/storage/emulated/0/Download/sms/list.txt")
-//            if (!file.exists() || file.delete()) {
-//                if (!file.parentFile.exists() && !file.parentFile.mkdir()) {
-//                    throw RuntimeException("WTF")
-//                }
-//
-//                FileUtils.writeLines(file, items.map { "\"${it.content}\", ${it.date.time}" })
-//            }
+            val file = File("/storage/emulated/0/Download/sms/sms_inbox.txt")
+            if (!file.exists() || file.delete()) {
+                if (!file.parentFile.exists() && !file.parentFile.mkdir()) {
+                    throw RuntimeException("WTF")
+                }
+
+                FileUtils.writeLines(file, items.map { "\"${it.content}\", ${it.date.time}" })
+            }
 
         } else {
             Timber.i( "EMPTY RESULT")
         }
-        Timber.i("result : ${messageCursor.count}")
+        Timber.i("result : ${cursor.count}")
 
         return items
     }
