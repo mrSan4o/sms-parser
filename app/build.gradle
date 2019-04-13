@@ -38,6 +38,7 @@ ext.gson = "2.2.4"
 ext.kotlinx_coroutines = "1.0.0"
 ext.rxjava = "2.2.6"
 ext.rxandroid = "2.1.0"
+ext.koin = "2.0.0-rc-2"
 
 
 dependencies {
@@ -45,6 +46,9 @@ dependencies {
 
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    implementation "org.koin:koin-android:$koin"
+    implementation "org.koin:koin-android-viewmodel:$koin"
 
     // Support Libraries
     implementation "com.android.support:support-v4:$supportLibVersion"
@@ -71,11 +75,11 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"
     kapt "android.arch.lifecycle:compiler:$lifecycle_version" // use kapt for Kotlin
 
-    implementation "com.google.dagger:dagger:$dagger"
-    implementation "com.google.dagger:dagger-android-support:$dagger"
-    implementation "com.google.dagger:dagger-android:$dagger"
-    kapt "com.google.dagger:dagger-compiler:$dagger"
-    kapt "com.google.dagger:dagger-android-processor:$dagger"
+//    implementation "com.google.dagger:dagger:$dagger"
+//    implementation "com.google.dagger:dagger-android-support:$dagger"
+//    implementation "com.google.dagger:dagger-android:$dagger"
+//    kapt "com.google.dagger:dagger-compiler:$dagger"
+//    kapt "com.google.dagger:dagger-android-processor:$dagger"
 
     implementation "com.google.code.gson:gson:$gson"
     implementation "io.reactivex.rxjava2:rxandroid:$rxandroid"

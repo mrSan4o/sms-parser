@@ -1,36 +1,35 @@
 package com.san4o.just4fun.smsparser.app
 
-import android.app.Activity
 import android.app.Application
-import com.san4o.just4fun.smsparser.app.dagger.AppComponent
-import com.san4o.just4fun.smsparser.app.dagger.DaggerActivityLifecycleCallback
-import com.san4o.just4fun.smsparser.app.dagger.DaggerAppComponent
-import dagger.android.AndroidInjector
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasActivityInjector
+import com.san4o.just4fun.smsparser.app.koin.appModule
+import com.san4o.just4fun.smsparser.app.koin.databaseModule
+import com.san4o.just4fun.smsparser.app.koin.viewModelModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
 import timber.log.Timber
-import javax.inject.Inject
 
-class App : Application(), HasActivityInjector {
+class App : Application(){
 
-    var component : AppComponent? = null
+
 
     override fun onCreate() {
         super.onCreate()
 
         Timber.plant(Timber.DebugTree())
 
-        component = DaggerAppComponent.builder()
-            .app(this)
-            .build().apply { inject(this@App) }
+        startKoin {
+            // use AndroidLogger as Koin Logger - default Level.INFO
+            androidLogger()
 
-        registerActivityLifecycleCallbacks(DaggerActivityLifecycleCallback())
+            // use the Android context given there
+            androidContext(this@App)
 
+            // load properties from assets/koin.properties file
+//            androidFileProperties()
+
+            // module list
+            modules(appModule, databaseModule, viewModelModule)
+        }
     }
-
-    @Inject
-    lateinit var activityInjector : DispatchingAndroidInjector<Activity>
-
-    override fun activityInjector(): AndroidInjector<Activity> = activityInjector
-
 }

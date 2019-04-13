@@ -2,21 +2,18 @@ package com.san4o.just4fun.smsparser.app.ui.list
 
 import android.Manifest
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.content.pm.PackageManager
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import com.san4o.just4fun.smsparser.app.R
-import com.san4o.just4fun.smsparser.app.dagger.AppScopeMember
-import com.san4o.just4fun.smsparser.app.dagger.viewmodel.ViewModelFactory
 import com.san4o.just4fun.smsparser.app.databinding.SmsListBinding
-import com.san4o.just4fun.smsparser.app.utils.*
+import com.san4o.just4fun.smsparser.app.utils.showToastShort
 import kotlinx.android.synthetic.main.sms_list.*
-import javax.inject.Inject
+import org.koin.android.viewmodel.ext.android.viewModel
 
-class SmsListActivity : AppCompatActivity(), AppScopeMember {
+class SmsListActivity : AppCompatActivity() {
 
     private val LOG_TAG: String = SmsListActivity::class.java.simpleName
 
@@ -24,25 +21,20 @@ class SmsListActivity : AppCompatActivity(), AppScopeMember {
 
     private lateinit var adapter: SmsListAdapter
 
-    @Inject
-    internal lateinit var viewModelFactory: ViewModelFactory<SmsListViewModel>
-    private lateinit var viewModel: SmsListViewModel
+
+    private val viewModel: SmsListViewModel by viewModel()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = DataBindingUtil.setContentView<SmsListBinding>(this, R.layout.sms_list)
 
-        this.viewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(SmsListViewModel::class.java)
+
         binding.model = viewModel
 
-        viewModel.errorLoadingNotification.observe(this, Observer {
-            showToastShort("Error Loading")
-        })
-        viewModel.refreshItemsViewCommand.observe(this, Observer {
-            adapter.notifyDataSetChanged()
-        })
+        viewModel.errorLoadingNotification.observe(this, Observer { showToastShort("Error Loading") })
+        viewModel.noItemsNotification.observe(this, Observer { showToastShort("No Items FOUND") })
+        viewModel.refreshItemsViewCommand.observe(this, Observer { adapter.notifyDataSetChanged() })
 
         adapter = SmsListAdapter(this, viewModel)
         smsList.adapter = adapter

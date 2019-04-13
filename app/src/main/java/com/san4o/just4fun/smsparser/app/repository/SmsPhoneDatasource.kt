@@ -3,23 +3,15 @@ package com.san4o.just4fun.smsparser.app.repository
 import android.content.Context
 import android.provider.Telephony
 import com.san4o.just4fun.smsparser.app.SmsSourceItem
-import com.san4o.just4fun.smsparser.app.SmsType
 import com.san4o.just4fun.smsparser.app.utils.getStringByName
 import io.reactivex.Single
 import org.apache.commons.io.FileUtils
 import timber.log.Timber
 import java.io.File
 import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
-
-@Singleton
-class SmsPhoneDatasource @Inject constructor(): SmsDatasource {
-
-    @Inject
-    lateinit var context : Context
 
 
+class SmsPhoneDatasource(private val context : Context) : SmsDatasource {
 
     override fun fetchSms(): Single<List<SmsSourceItem>> = Single.fromCallable{ readSberbankSms()}
 

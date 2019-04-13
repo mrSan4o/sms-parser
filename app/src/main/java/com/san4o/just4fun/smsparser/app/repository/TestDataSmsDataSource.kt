@@ -5,12 +5,9 @@ import com.san4o.just4fun.smsparser.app.SmsSourceItem
 import io.reactivex.Single
 import org.apache.commons.io.IOUtils
 import timber.log.Timber
-import java.lang.Exception
-import java.lang.RuntimeException
 import java.util.*
-import javax.inject.Inject
 
-class TestDataSmsDataSource @Inject constructor() : SmsDatasource {
+class TestDataSmsDataSource(private val context: Context) : SmsDatasource {
 
     companion object {
         fun parse(line: String): SmsSourceItem {
@@ -28,8 +25,7 @@ class TestDataSmsDataSource @Inject constructor() : SmsDatasource {
 
     }
 
-    @Inject
-    lateinit var context: Context
+
 
     override fun fetchSms(): Single<List<SmsSourceItem>> {
 

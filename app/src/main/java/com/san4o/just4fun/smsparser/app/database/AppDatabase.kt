@@ -4,12 +4,15 @@ import android.arch.persistence.room.Database
 import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.content.Context
+import com.san4o.just4fun.smsparser.app.database.dao.PaymentDao
 import com.san4o.just4fun.smsparser.app.database.dao.SmsDao
+import com.san4o.just4fun.smsparser.app.database.entities.Payment
 import com.san4o.just4fun.smsparser.app.database.entities.Sms
 
 @Database(
     entities = arrayOf(
-        Sms::class
+        Sms::class,
+        Payment::class
     ),
     exportSchema = true,
     version = 1
@@ -17,6 +20,7 @@ import com.san4o.just4fun.smsparser.app.database.entities.Sms
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun provideSmsDao(): SmsDao
+    abstract fun providePaymentDao(): PaymentDao
 
     companion object {
         fun buildDatabase(context: Context): AppDatabase {

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">SmsParser</string>
+    <string name="balance_format">Баланс : %f</string>
+    <string name="type_format">%1$s(%2$s)</string>
 </resources>
