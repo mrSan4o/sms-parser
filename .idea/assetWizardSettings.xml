@@ -18,7 +18,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/E:/Development/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/editor/ic_multiline_chart_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/E:/Development/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/notification/ic_sync_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -28,11 +28,9 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="height" value="94" />
-                            <entry key="outputName" value="ic_multiline_chart_black_24dp" />
+                            <entry key="outputName" value="ic_sync_black_24dp" />
                             <entry key="overrideSize" value="true" />
                             <entry key="sourceFile" value="C:\Users\aleks" />
-                            <entry key="width" value="94" />
                           </map>
                         </option>
                       </PersistentState>

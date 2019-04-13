@@ -10,6 +10,7 @@ import com.san4o.just4fun.smsparser.app.ui.list.SmsListActivity
 class SplashActivity : AppCompatActivity() {
 
     private val permissions = arrayOf(
+        android.Manifest.permission.READ_SMS,
         android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
         android.Manifest.permission.READ_EXTERNAL_STORAGE
     )
@@ -28,7 +29,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun start() {
-        startActivity(Intent(this, SmsListActivity::class.java))
+        startActivity(Intent(this, MainActivity::class.java))
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

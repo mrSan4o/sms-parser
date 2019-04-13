@@ -58,6 +58,8 @@ constructor(
 
         paymentItems.forEach { insertPaymentItem(it) }
 
+        Timber.d("Parse %s payment items", paymentItems.size)
+
         return paymentItems
     }
 

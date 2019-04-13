@@ -33,6 +33,7 @@ class TestDataSmsDataSource(private val context: Context) : SmsDatasource {
 
             return@defer Single.fromCallable { context.assets.open("sms_inbox.txt") }
                 .map { inputStream -> IOUtils.readLines(inputStream, "UTF-8") }
+                .doOnSuccess{ Timber.d("read %s lines", it.size)}
                 .map { readLines -> readLines.mapNotNull { line -> parse(line) } }
         }
     }

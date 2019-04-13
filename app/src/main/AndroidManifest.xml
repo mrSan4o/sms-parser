@@ -18,8 +18,9 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name="com.san4o.just4fun.smsparser.app.ui.list.SmsListActivity">
-
+        <activity android:name=".ui.MainActivity">
+        </activity>
+        <activity android:name=".ui.list.SmsListActivity">
         </activity>
         <activity android:name=".ui.SplashActivity">
             <intent-filter>

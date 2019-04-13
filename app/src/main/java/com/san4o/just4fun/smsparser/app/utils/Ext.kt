@@ -2,6 +2,7 @@ package com.san4o.just4fun.smsparser.app.utils
 
 import android.content.Context
 import android.database.Cursor
+import android.support.v4.app.Fragment
 import android.widget.Toast
 import com.san4o.just4fun.smsparser.app.database.dao.PaymentDao
 import com.san4o.just4fun.smsparser.app.database.dao.SmsDao
@@ -33,6 +34,9 @@ fun Long.toDate(): Date {
     return Date(this)
 }
 
+fun Fragment.showToastShort(message: String) {
+    this.context?.showToastShort(message)
+}
 fun Context.showToastShort(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
@@ -72,7 +76,7 @@ fun SmsDao.insertNew(sms: Sms): Completable {
         .flatMapCompletable { count ->
             if (count == 0) {
                 return@flatMapCompletable Completable.fromAction { this.insert(sms) }
-                    .doOnComplete { Timber.d("insert  ${sms.date().longDefaultFormat()} : ${sms.content}") }
+                    .doOnComplete { Timber.d("      >>> insert  ${sms.date().longDefaultFormat()} : ${sms.content}") }
             }
             return@flatMapCompletable Completable.complete()
         }

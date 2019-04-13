@@ -15,20 +15,13 @@ import org.koin.android.viewmodel.ext.android.viewModel
 
 class SmsListActivity : AppCompatActivity() {
 
-    private val LOG_TAG: String = SmsListActivity::class.java.simpleName
-
-    private val PERMISSION_REQUEST_CODE: Int = 111
-
-    private lateinit var adapter: SmsListAdapter
-
-
     private val viewModel: SmsListViewModel by viewModel()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = DataBindingUtil.setContentView<SmsListBinding>(this, R.layout.sms_list)
 
+        val adapter = SmsListAdapter(this, viewModel)
 
         binding.model = viewModel
 
@@ -36,7 +29,6 @@ class SmsListActivity : AppCompatActivity() {
         viewModel.noItemsNotification.observe(this, Observer { showToastShort("No Items FOUND") })
         viewModel.refreshItemsViewCommand.observe(this, Observer { adapter.notifyDataSetChanged() })
 
-        adapter = SmsListAdapter(this, viewModel)
         smsList.adapter = adapter
         smsList.layoutManager = LinearLayoutManager(this)
 
@@ -44,36 +36,8 @@ class SmsListActivity : AppCompatActivity() {
 
     }
 
-    override fun onStart() {
-        super.onStart()
-
-        if (!isPermissionGranted(Manifest.permission.READ_SMS)) {
-            requestPermissions(Manifest.permission.READ_SMS, PERMISSION_REQUEST_CODE)
-            return
-        }
-    }
 
     fun onSync() {
         viewModel.readSms()
     }
-
-    private fun requestPermissions(perm: String, code: Int) {
-        requestPermissions(arrayOf(perm), code)
-    }
-
-    private fun isPermissionGranted(perm: String): Boolean {
-        return checkSelfPermission(perm) == PackageManager.PERMISSION_GRANTED
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (PERMISSION_REQUEST_CODE == requestCode) {
-            if (grantResults.first() == PackageManager.PERMISSION_GRANTED) {
-
-            }
-        }
-    }
-
-
 }

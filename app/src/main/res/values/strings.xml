@@ -2,4 +2,7 @@
     <string name="app_name">SmsParser</string>
     <string name="balance_format">Баланс : %f</string>
     <string name="type_format">%1$s(%2$s)</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

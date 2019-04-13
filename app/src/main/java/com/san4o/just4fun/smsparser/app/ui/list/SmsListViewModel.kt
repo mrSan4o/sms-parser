@@ -8,6 +8,7 @@ import com.san4o.just4fun.smsparser.app.repository.tools.SingleCallback
 import com.san4o.just4fun.smsparser.app.tools.PaymentItem
 import com.san4o.just4fun.smsparser.app.utils.ListAdapter
 import com.san4o.just4fun.smsparser.app.utils.SingleVoidLiveEvent
+import timber.log.Timber
 
 class SmsListViewModel(private val repository: SmsListRepository)
     : ViewModel(), ListAdapter<PaymentItem> {
@@ -24,11 +25,11 @@ class SmsListViewModel(private val repository: SmsListRepository)
     }
 
     private fun findAllSavedSms() {
+        Timber.d("findAllSavedSms")
         showLoading.set(true)
         repository.fetchSms(object : SingleCallback<List<PaymentItem>> {
             override fun onSuccess(data: List<PaymentItem>) {
-                items.addAll(data)
-                refreshItemsViewCommand.call()
+                refreshItems(data)
                 showLoading.set(false)
             }
 
@@ -50,8 +51,7 @@ class SmsListViewModel(private val repository: SmsListRepository)
             }
 
             override fun onSuccess(data: List<PaymentItem>) {
-                items.addAll(data)
-                refreshItemsViewCommand.call()
+                refreshItems(data)
                 showLoading.set(false)
             }
 
@@ -60,6 +60,14 @@ class SmsListViewModel(private val repository: SmsListRepository)
                 showLoading.set(false)
             }
         })
+    }
+
+    private fun refreshItems(data: List<PaymentItem>) {
+        Timber.d("refreshItems %s", data.size)
+
+        items.addAll(data)
+        items.sortByDescending { it.date }
+        refreshItemsViewCommand.call()
     }
 
 
