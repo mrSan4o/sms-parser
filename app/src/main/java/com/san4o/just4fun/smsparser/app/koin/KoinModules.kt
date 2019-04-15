@@ -14,7 +14,8 @@ import timber.log.Timber
 val appModule = module {
     single { TestDataSmsDataSource(get()) as SmsDatasource}
 
-    single { SmsRoomStarage(get(), get()) as SmsStorage}
+//    single { SmsRoomStarage(get(), get()) as SmsStorage}
+    single { SmsObjectBoxStorage(get()) as SmsStorage}
 
     single { SmsListAppRepository(get(), get()) as SmsListRepository}
 }

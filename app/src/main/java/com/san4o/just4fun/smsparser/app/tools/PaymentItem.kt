@@ -27,6 +27,19 @@ class PaymentItem(
                 payment.source
             )
         }
+        fun fromModel(payment: com.san4o.just4fun.smsparser.app.model.Payment): PaymentItem {
+            return PaymentItem(
+                payment.typeKey(),
+                payment.typeName,
+                payment.typeDescription,
+                payment.sum,
+                payment.balance,
+                payment.destination,
+                payment.date,
+                payment.source
+            )
+        }
+
         fun parse(paymentText: PaymentText, date: Date) : PaymentItem {
             val calendarDate = CalendarDate(date)
             paymentText.parseDate(calendarDate)
@@ -47,5 +60,6 @@ class PaymentItem(
 
             return PaymentItem(type, typeName, typeDescription, sum, balance, destination, calendarDate.getDate(), paymentText.text)
         }
+
     }
 }
