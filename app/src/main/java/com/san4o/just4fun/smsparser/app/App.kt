@@ -3,7 +3,9 @@ package com.san4o.just4fun.smsparser.app
 import android.app.Application
 import com.san4o.just4fun.smsparser.app.koin.appModule
 import com.san4o.just4fun.smsparser.app.koin.databaseModule
+import com.san4o.just4fun.smsparser.app.koin.modelModule
 import com.san4o.just4fun.smsparser.app.koin.viewModelModule
+import com.san4o.just4fun.smsparser.app.model.MyObjectBox
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -18,6 +20,8 @@ class App : Application(){
 
         Timber.plant(Timber.DebugTree())
 
+
+
         startKoin {
             // use AndroidLogger as Koin Logger - default Level.INFO
             androidLogger()
@@ -29,7 +33,7 @@ class App : Application(){
 //            androidFileProperties()
 
             // module list
-            modules(appModule, databaseModule, viewModelModule)
+            modules(appModule, databaseModule, viewModelModule, modelModule)
         }
     }
 }

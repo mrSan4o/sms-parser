@@ -15,10 +15,14 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 private val longFormat = SimpleDateFormat("dd.MM.yyyy HH:mm")
+private val shortFormat = SimpleDateFormat("dd.MM.yyyy")
 private val systemlongFormat = SimpleDateFormat("yyyy-MM-dd HH:mm")
 
 fun Date.longDefaultFormat(): String {
     return longFormat.format(this)
+}
+fun Date.shortDefaultFormat(): String {
+    return shortFormat.format(this)
 }
 
 fun Date.systemlongFormat(): String {

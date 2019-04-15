@@ -12,6 +12,9 @@ interface PaymentDao {
     @Query("select * from payment")
     fun findAllFlow(): Flowable<List<Payment>>
 
+    @Query("select * from payment")
+    fun findAll(): Single<List<Payment>>
+
     @Query("select count(*) from payment where datetime = :dateTime")
     fun countByDate(dateTime: Long): Single<Int>
 

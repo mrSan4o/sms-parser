@@ -3,19 +3,25 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/main_graph"
-            app:startDestination="@id/smsListFragment"
+            app:startDestination="@id/summaryFragment"
         >
 
     <fragment
             android:id="@+id/smsListFragment"
-            android:name="com.san4o.just4fun.smsparser.app.SmsListFragment"
+            android:name="com.san4o.just4fun.smsparser.app.ui.list.SmsListFragment"
             android:label="fragment_sms_list"
             tools:layout="@layout/fragment_sms_list"
             />
     <fragment
             android:id="@+id/summaryFragment"
-            android:name="com.san4o.just4fun.smsparser.app.SummaryFragment"
+            android:name="com.san4o.just4fun.smsparser.app.ui.summary.SummaryFragment"
             android:label="fragment_summary"
             tools:layout="@layout/fragment_summary"
+            />
+    <fragment
+            android:id="@+id/categoryFragment"
+            android:name="com.san4o.just4fun.smsparser.app.ui.category.CategoryFragment"
+            android:label="fragment_category"
+            tools:layout="@layout/fragment_category"
             />
 </navigation>

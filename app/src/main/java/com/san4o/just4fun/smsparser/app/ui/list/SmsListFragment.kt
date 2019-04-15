@@ -1,4 +1,4 @@
-package com.san4o.just4fun.smsparser.app
+package com.san4o.just4fun.smsparser.app.ui.list
 
 import android.arch.lifecycle.Observer
 import android.databinding.DataBindingUtil
@@ -8,9 +8,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.san4o.just4fun.smsparser.app.R
 import com.san4o.just4fun.smsparser.app.databinding.FragmentSmsListBinding
-import com.san4o.just4fun.smsparser.app.ui.list.SmsListAdapter
-import com.san4o.just4fun.smsparser.app.ui.list.SmsListViewModel
 import com.san4o.just4fun.smsparser.app.utils.showToastShort
 import kotlinx.android.synthetic.main.sms_list.*
 import org.koin.android.viewmodel.ext.android.sharedViewModel
@@ -25,7 +24,8 @@ class SmsListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_sms_list, container, false)
+        binding = DataBindingUtil.inflate(inflater,
+            R.layout.fragment_sms_list, container, false)
         return binding.root
     }
 

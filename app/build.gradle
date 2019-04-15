@@ -6,6 +6,8 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-kapt'
 
+apply plugin: 'io.objectbox' // apply last
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -47,7 +49,8 @@ dependencies {
 
 
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+    implementation "io.objectbox:objectbox-kotlin:$objectboxVersion"
 
     // Support Libraries
     implementation "com.android.support:support-v4:$supportLibVersion"

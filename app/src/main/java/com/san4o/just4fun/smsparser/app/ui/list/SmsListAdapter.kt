@@ -4,17 +4,15 @@ import android.content.Context
 import android.databinding.DataBindingUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.san4o.just4fun.smsparser.app.R
-import com.san4o.just4fun.smsparser.app.SmsType
 import com.san4o.just4fun.smsparser.app.databinding.PaymentListItemBinding
-import com.san4o.just4fun.smsparser.app.utils.longDefaultFormat
+import com.san4o.just4fun.smsparser.app.tools.PaymentItem
+import com.san4o.just4fun.smsparser.app.utils.ListAdapter
 
 class SmsListAdapter(
     private val context: Context,
-    private val viewModel: SmsListViewModel
+    private val items: ListAdapter<PaymentItem>
 ) : RecyclerView.Adapter<SmsListAdapter.SmsViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, p1: Int): SmsViewHolder {
@@ -22,11 +20,11 @@ class SmsListAdapter(
     }
 
     override fun getItemCount(): Int {
-        return viewModel.getSize()
+        return items.getSize()
     }
 
     override fun onBindViewHolder(vh: SmsViewHolder, i: Int) {
-        val item = viewModel.getItem(i)
+        val item = items.getItem(i)
 
         vh.binding.model = PaymentListItemViewModel.create(item)
     }

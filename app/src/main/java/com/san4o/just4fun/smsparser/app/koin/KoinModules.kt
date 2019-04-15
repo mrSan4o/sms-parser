@@ -2,19 +2,21 @@ package com.san4o.just4fun.smsparser.app.koin
 
 import android.arch.persistence.room.Room
 import com.san4o.just4fun.smsparser.app.database.AppDatabase
-import com.san4o.just4fun.smsparser.app.repository.SmsDatasource
-import com.san4o.just4fun.smsparser.app.repository.SmsListRepository
-import com.san4o.just4fun.smsparser.app.repository.SmsListRepositoryImpl
-import com.san4o.just4fun.smsparser.app.repository.TestDataSmsDataSource
+import com.san4o.just4fun.smsparser.app.model.MyObjectBox
+import com.san4o.just4fun.smsparser.app.repository.*
 import com.san4o.just4fun.smsparser.app.ui.list.SmsListViewModel
+import io.objectbox.BoxStore
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
+import timber.log.Timber
 
 val appModule = module {
     single { TestDataSmsDataSource(get()) as SmsDatasource}
 
-    single { SmsListRepositoryImpl(get(), get(), get()) as SmsListRepository}
+    single { SmsRoomStarage(get(), get()) as SmsStorage}
+
+    single { SmsListAppRepository(get(), get()) as SmsListRepository}
 }
 
 val databaseModule = module {
@@ -33,4 +35,14 @@ val databaseModule = module {
 val viewModelModule = module {
 
     viewModel { SmsListViewModel(get()) }
+}
+
+val modelModule = module {
+    single {
+        val boxStore = MyObjectBox.builder()
+            .androidContext(this.androidContext())
+            .build()
+        Timber.d("Using ObjectBox ${BoxStore.getVersion()} (${BoxStore.getVersionNative()})")
+        return@single boxStore
+    }
 }

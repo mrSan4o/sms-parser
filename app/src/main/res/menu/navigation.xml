@@ -2,12 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+            android:id="@+id/summaryFragment"
+            android:icon="@drawable/ic_web_black_24dp"
+            android:title="Итого" />
+    <item
             android:id="@+id/smsListFragment"
             android:icon="@drawable/ic_toc_black_24dp"
             android:title="Список" />
     <item
-            android:id="@+id/summaryFragment"
-            android:icon="@drawable/ic_web_black_24dp"
-            android:title="Итого" />
+            android:id="@+id/categoryFragment"
+            android:icon="@drawable/ic_dashboard_black_24dp"
+            android:title="Категории" />
 
 </menu>
