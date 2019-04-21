@@ -15,7 +15,7 @@ class PaymentItem(
     val source: String
 ) {
     companion object {
-        fun fromEntity(payment: Payment): PaymentItem{
+        fun fromEntity(payment: Payment): PaymentItem {
             return PaymentItem(
                 payment.typeKey(),
                 payment.typeName,
@@ -27,20 +27,22 @@ class PaymentItem(
                 payment.source
             )
         }
+
         fun fromModel(payment: com.san4o.just4fun.smsparser.app.model.Payment): PaymentItem {
             return PaymentItem(
-                payment.typeKey(),
-                payment.typeName,
-                payment.typeDescription,
-                payment.sum,
-                payment.balance,
-                payment.destination,
-                payment.date,
-                payment.source
+                type = payment.typeKey(),
+                typeName = payment.typeName,
+                typeDescription = payment.typeDescription,
+                sum = payment.sum,
+                balance = payment.balance,
+                date = payment.date,
+                source = payment.source,
+                destination = payment.shop.target?.name ?: ""
+
             )
         }
 
-        fun parse(paymentText: PaymentText, date: Date) : PaymentItem {
+        fun parse(paymentText: PaymentText, date: Date): PaymentItem {
             val calendarDate = CalendarDate(date)
             paymentText.parseDate(calendarDate)
 
@@ -58,7 +60,16 @@ class PaymentItem(
             val typeDescription = parseFlowType.description
 
 
-            return PaymentItem(type, typeName, typeDescription, sum, balance, destination, calendarDate.getDate(), paymentText.text)
+            return PaymentItem(
+                type,
+                typeName,
+                typeDescription,
+                sum,
+                balance,
+                destination,
+                calendarDate.getDate(),
+                paymentText.text
+            )
         }
 
     }

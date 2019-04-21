@@ -1,10 +1,7 @@
 package com.san4o.just4fun.smsparser.app.repository
 
 import com.san4o.just4fun.smsparser.app.SmsSourceItem
-import com.san4o.just4fun.smsparser.app.model.Payment
-import com.san4o.just4fun.smsparser.app.model.Payment_
-import com.san4o.just4fun.smsparser.app.model.Sms
-import com.san4o.just4fun.smsparser.app.model.Sms_
+import com.san4o.just4fun.smsparser.app.model.*
 import com.san4o.just4fun.smsparser.app.tools.PaymentItem
 import io.objectbox.BoxStore
 import io.objectbox.kotlin.boxFor
@@ -15,6 +12,7 @@ import io.reactivex.Single
 class SmsObjectBoxStorage(private val store: BoxStore) : SmsStorage {
 
     val paymentBox = store.boxFor<Payment>()
+    val shopBox = store.boxFor<Shop>()
     val smsBox = store.boxFor<Sms>()
 
     val findAllQuery = paymentBox.query {
@@ -34,22 +32,36 @@ class SmsObjectBoxStorage(private val store: BoxStore) : SmsStorage {
 
     override fun updatePayments(items: List<PaymentItem>) {
         val insertPayments = items.filter { paymentQuery(it).count() == 0L }
-            .map { mapPayment(it) }
+            .map {
+                var shop = Shop.newInstance(it.destination)
+                val shopQuery = shopQuery(shop.name)
+                if (shopQuery.count() == 0L) {
+                    shopBox.put(shop)
+                }else{
+                    shop = shopQuery.findFirst()!!
+                }
+                mapPayment(it, shop)
+            }
 
         paymentBox.put(insertPayments)
     }
 
-    private fun mapPayment(it: PaymentItem): Payment {
-        return Payment(
+    private fun mapPayment(
+        it: PaymentItem,
+        shop: Shop
+    ): Payment {
+        val payment = Payment(
             date = it.date,
             type = it.type.id,
             typeName = it.typeName,
             typeDescription = it.typeDescription,
-            destination = it.destination,
             sum = it.sum,
             balance = it.balance,
             source = it.source
         )
+        payment.shop.target = shop
+        return payment
+
     }
 
     private fun smsQuery(item: SmsSourceItem): Query<Sms> {
@@ -64,8 +76,12 @@ class SmsObjectBoxStorage(private val store: BoxStore) : SmsStorage {
         val query = paymentBox.query {
             equal(Payment_.date, item.date)
             equal(Payment_.sum, item.sum, 0.1)
-            equal(Payment_.destination, item.destination)
         }
         return query
+    }
+
+
+    private fun shopQuery(name: String) = shopBox.query {
+        equal(Shop_.name, name)
     }
 }
